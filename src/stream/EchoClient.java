@@ -21,8 +21,8 @@ public class EchoClient {
 
         Socket echoSocket = null;
         PrintStream socOut = null;
-        BufferedReader stdIn = null;
         BufferedReader socIn = null;
+        BufferedReader stdIn = null;
 
         if (args.length != 2) {
             System.out.println("Usage: java EchoClient <EchoServer host> <EchoServer port>");
@@ -32,8 +32,9 @@ public class EchoClient {
         try {
             // creation socket ==> connexion
             echoSocket = new Socket(args[0], Integer.parseInt(args[1]));
-            socIn = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
             socOut = new PrintStream(echoSocket.getOutputStream());
+            socIn = new BufferedReader(
+                    new InputStreamReader(echoSocket.getInputStream()));
             stdIn = new BufferedReader(new InputStreamReader(System.in));
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + args[0]);
@@ -43,6 +44,9 @@ public class EchoClient {
             System.exit(1);
         }
 
+        EchoClientReceptionThread receptionThread = new EchoClientReceptionThread(socIn);
+        receptionThread.start();
+
         String line;
         while (true) {
             line = stdIn.readLine();
@@ -50,10 +54,14 @@ public class EchoClient {
                 break;
             }
             socOut.println(line);
-            System.out.println("echo: " + line);
         }
-        socOut.close();
+
+        System.out.println("Closing");
+        receptionThread.interrupt();
+        echoSocket.shutdownInput();
+        echoSocket.shutdownOutput();
         socIn.close();
+        socOut.close();
         stdIn.close();
         echoSocket.close();
     }
