@@ -30,13 +30,16 @@ public class ClientThread extends Thread {
                     new InputStreamReader(clientSocket.getInputStream()));
             while (true) {
                 String line = socIn.readLine();
+                if (line.equals(".")) {
+                    break;
+                }
                 this.sendEncodedMessage(line);
             }
         } catch (Exception e) {
             System.err.println("Error in EchoServer: " + e);
         } finally {
             EchoServerMultiThreaded.removeClientSocket(this.clientSocket);
-            EchoServerMultiThreaded.sendDeconnexionMessage(this.name);
+            EchoServerMultiThreaded.sendDisconnectionMessage(this.name);
         }
     }
 

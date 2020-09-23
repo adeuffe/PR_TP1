@@ -55,7 +55,7 @@ public class EchoServerMultiThreaded {
                 ClientThread ct = new ClientThread(clientSocket, name);
                 addClientSocket(clientSocket);
                 ct.start();
-                sendConnexionMessage(name);
+                sendConnectionMessage(name);
                 i++;
 
             }
@@ -64,13 +64,13 @@ public class EchoServerMultiThreaded {
         }
     }
 
-    public static void sendConnexionMessage(String name) {
-        String connexionMessage = name + " a rejoint le chat !";
-        CommunicationThread.offerQueue("System|" + connexionMessage);
+    public static void sendConnectionMessage(String name) {
+        String connectionMessage = name + " a rejoint le chat !";
+        CommunicationThread.offerQueue("System|" + connectionMessage);
     }
 
-    public static void sendDeconnexionMessage(String name) {
-        String deconnexionMessage = name + " a quitté le chat !";
-        CommunicationThread.offerQueue("System|" + deconnexionMessage);
+    public static void sendDisconnectionMessage(String name) {
+        String disconnectionMessage = name + " a quitté le chat !";
+        CommunicationThread.offerQueue("System|" + disconnectionMessage);
     }
 }
