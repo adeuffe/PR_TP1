@@ -50,10 +50,10 @@ public class EchoClient {
         String line;
         while (true) {
             line = stdIn.readLine();
-            if (line.equals(".")) {
+            socOut.println(line);
+            if (line.equals(".")){
                 break;
             }
-            socOut.println(line);
         }
 
         System.out.println("Closing");
