@@ -1,40 +1,76 @@
 /***
- * EchoServer
- * Example of a TCP server
- * Date: 10/01/04
+ * EchoServerMultiThreaded
+ * TCP Server multi-threaded
+ * Date: 09/23/2020
  * Authors:
+ * - DUBOIS-TERMOZ Loïc
+ * - DUFFOUR Alexandre
  */
 
 package stream;
 
-import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EchoServerMultiThreaded {
 
+    private static final List<Socket> clientsSockets = new ArrayList<>();
+
+    public static synchronized List<Socket> getClientsSockets() {
+        return clientsSockets;
+    }
+
+    private static void addClientSocket(Socket clientSocket) {
+        getClientsSockets().add(clientSocket);
+    }
+
+    public static void removeClientSocket(Socket clientSocket) {
+        getClientsSockets().remove(clientSocket);
+    }
+
     /**
-     * main method
+     * main server method
      *
-     * @param EchoServer port
+     * @param args Application arguments
      **/
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         ServerSocket listenSocket;
+        CommunicationThread communicationThread = new CommunicationThread();
 
         if (args.length != 1) {
             System.out.println("Usage: java EchoServer <EchoServer port>");
             System.exit(1);
         }
         try {
-            listenSocket = new ServerSocket(Integer.parseInt(args[0])); //port
+            listenSocket = new ServerSocket(Integer.parseInt(args[0]));
+            communicationThread.start();
             System.out.println("Server ready...");
+            int i = 1;
+            String name;
             while (true) {
                 Socket clientSocket = listenSocket.accept();
-                System.out.println("Connexion from:" + clientSocket.getInetAddress());
-                ClientThread ct = new ClientThread(clientSocket);
+                System.out.println("Connexion from: " + clientSocket.getInetAddress());
+                name = "Client" + i;
+                ClientThread ct = new ClientThread(clientSocket, name);
+                addClientSocket(clientSocket);
                 ct.start();
+                sendConnexionMessage(name);
+                i++;
+
             }
         } catch (Exception e) {
-            System.err.println("Error in EchoServer:" + e);
+            System.err.println("Error in EchoServer: " + e);
         }
+    }
+
+    public static void sendConnexionMessage(String name) {
+        String connexionMessage = name + " a rejoint le chat !";
+        CommunicationThread.offerQueue("System|" + connexionMessage);
+    }
+
+    public static void sendDeconnexionMessage(String name) {
+        String deconnexionMessage = name + " a quitté le chat !";
+        CommunicationThread.offerQueue("System|" + deconnexionMessage);
     }
 }

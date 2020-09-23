@@ -12,30 +12,36 @@ import java.net.*;
 
 public class ClientThread extends Thread {
 
+    private String name;
     private Socket clientSocket;
 
-    ClientThread(Socket s) {
+    ClientThread(Socket s, String name) {
         this.clientSocket = s;
+        this.name = name;
     }
 
     /**
      * receives a request from client then sends an echo to the client
-     *
-     * @param clientSocket the client socket
      **/
     public void run() {
         try {
             BufferedReader socIn = null;
             socIn = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
-            PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
             while (true) {
                 String line = socIn.readLine();
-                socOut.println(line);
+                this.sendEncodedMessage(line);
             }
         } catch (Exception e) {
-            System.err.println("Error in EchoServer:" + e);
+            System.err.println("Error in EchoServer: " + e);
+        } finally {
+            EchoServerMultiThreaded.removeClientSocket(this.clientSocket);
+            EchoServerMultiThreaded.sendDeconnexionMessage(this.name);
         }
+    }
+
+    public void sendEncodedMessage(String message) {
+        CommunicationThread.offerQueue(this.name + "|" + message);
     }
 }
 

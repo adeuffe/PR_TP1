@@ -16,10 +16,9 @@ public class EchoClientReceptionThread extends Thread {
             String message = null;
             while (!this.isInterrupted()) {
                 if (message != null)
-                    System.out.println("Server : " + message);
+                    System.out.println(message);
                 message = socIn.readLine();
             }
-            //System.out.println("Thread Stop");
         } catch (Exception e) {
             System.err.println("Error in EchoClientReceptionThread:" + e);
         }
