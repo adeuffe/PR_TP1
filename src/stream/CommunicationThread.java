@@ -33,6 +33,7 @@ public class CommunicationThread extends Thread {
                 String[] decodedMessage = message.split("\\|");
                 String finalMessage = decodedMessage[0] + " : " + decodedMessage[1];
                 System.out.println(finalMessage);
+                EchoServerMultiThreaded.addHistoricalMessage(finalMessage);
                 EchoServerMultiThreaded.getClientsSockets().stream().forEach((Socket socketClient) -> {
                     try {
                         PrintStream socOut = new PrintStream(socketClient.getOutputStream());

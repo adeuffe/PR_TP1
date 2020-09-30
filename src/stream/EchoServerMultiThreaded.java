@@ -9,6 +9,8 @@
 
 package stream;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,15 @@ import java.util.List;
 public class EchoServerMultiThreaded {
 
     private static final List<Socket> clientsSockets = new ArrayList<>();
+    private static final List<String> historical = new ArrayList<>();
+
+    public static synchronized List<String> getHistorical() {
+        return historical;
+    }
+
+    public static synchronized void addHistoricalMessage(String message) {
+        getHistorical().add(message);
+    }
 
     public static synchronized List<Socket> getClientsSockets() {
         return clientsSockets;
@@ -55,6 +66,7 @@ public class EchoServerMultiThreaded {
                 ClientThread ct = new ClientThread(clientSocket, name);
                 addClientSocket(clientSocket);
                 ct.start();
+                sendHistorical(clientSocket);
                 sendConnectionMessage(name);
                 i++;
 
@@ -72,5 +84,14 @@ public class EchoServerMultiThreaded {
     public static void sendDisconnectionMessage(String name) {
         String disconnectionMessage = name + " a quitté le chat !";
         CommunicationThread.offerQueue("System|" + disconnectionMessage);
+    }
+
+    public static void sendHistorical(Socket clientSocket) throws IOException {
+        PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
+        List<String> historicalClone = new ArrayList<>(getHistorical());
+
+        for (String message : historicalClone) {
+            socOut.println(message);
+        }
     }
 }
