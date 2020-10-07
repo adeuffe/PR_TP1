@@ -9,16 +9,19 @@
 
 package stream;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import org.omg.PortableInterceptor.Interceptor;
+
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EchoServerMultiThreaded {
+public class EchoServerMultiThreaded{
 
     private static final List<Socket> clientsSockets = new ArrayList<>();
     private static final List<String> historical = new ArrayList<>();
+    private static final String historicalFileDir = "./";
+    private static final String historicalFileName = historicalFileDir + "historical.txt";
 
     public static synchronized List<String> getHistorical() {
         return historical;
@@ -26,6 +29,12 @@ public class EchoServerMultiThreaded {
 
     public static synchronized void addHistoricalMessage(String message) {
         getHistorical().add(message);
+        try {
+            saveHistoricalMessage(message);
+        } catch (IOException ex) {
+            System.out.println("Error in saveHistoricalMessage : " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     public static synchronized List<Socket> getClientsSockets() {
@@ -46,6 +55,20 @@ public class EchoServerMultiThreaded {
      * @param args Application arguments
      **/
     public static void main(String[] args) {
+        // Application stop interception
+        /*Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    saveHistorical();
+                } catch (IOException ex) {
+                    System.out.println("Error in saveHistorical : " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+                System.out.println("Server stopped");
+            }
+        });*/
+
         ServerSocket listenSocket;
         CommunicationThread communicationThread = new CommunicationThread();
 
@@ -54,6 +77,7 @@ public class EchoServerMultiThreaded {
             System.exit(1);
         }
         try {
+            initHistorical();
             listenSocket = new ServerSocket(Integer.parseInt(args[0]));
             communicationThread.start();
             System.out.println("Server ready...");
@@ -94,4 +118,52 @@ public class EchoServerMultiThreaded {
             socOut.println(message);
         }
     }
+
+    public static void initHistorical() {
+        // Import clubs
+        File file = new File(historicalFileName);
+        int car;
+        StringBuilder buffer = new StringBuilder("");
+        FileInputStream ftemp;
+
+        try {
+            ftemp = new FileInputStream(file);
+            while( (car = ftemp.read()) != -1) {
+                // Each line is treated after another, we don't want the ending "\r\n" of each line in the messages
+                if ((char)car == '\r') {}//do nothing
+                else if ((char)car == '\n') {
+                    getHistorical().add(buffer.toString());
+                    buffer.delete(0, buffer.length());
+                }
+                else
+                    buffer.append((char)car);
+            }
+            ftemp.close();
+        }
+        catch(FileNotFoundException e) {
+            System.out.println("Fichier introuvable");
+        }
+        catch(IOException ioe) {
+            System.out.println("Exception " + ioe);
+        }
+    }
+
+    public static void saveHistoricalMessage(String message) throws IOException {
+        // Creation of the repertory if it doesn't exist
+        if(!new File(historicalFileDir).exists())
+        {
+            // Créer le dossier avec tous ses parents
+            new File(historicalFileDir).mkdirs();
+            System.out.println("App Directory created.");
+        }
+
+        // Creating file (if it doesn't already exist) and writing the historical in it
+        FileWriter fw = new FileWriter(historicalFileName, true);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        bw.write(message);
+        bw.newLine();
+        bw.close();
+    }
+
 }
