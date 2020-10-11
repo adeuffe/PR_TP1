@@ -2,10 +2,16 @@ package stream;
 
 import java.net.DatagramPacket;
 
+/**
+ * Reception thread for a multicast group member.
+ *
+ * @author Loïc DUBOIS-TERMOZ
+ * @author Alexandre DUFOUR
+ */
 public class EchoMulticastReceptionThread extends Thread {
 
     /**
-     * receives a message from server then print it on the client standard output
+     * Run method of the thread. When it receives a message, it sends it to the standard output.
      **/
     public void run() {
         try {

@@ -8,24 +8,52 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+/**
+ * UDP multi-threaded Server using multicast IP groups
+ *
+ * @author Loïc DUBOIS-TERMOZ
+ * @author Alexandre DUFOUR
+ */
 public class EchoServerMulticast {
 
     private static MulticastSocket multSocket;
     private static InetAddress groupAddr;
     private static int groupPort;
 
+    /**
+     * Multicast socket getter.
+     *
+     * @return the multicast socket
+     */
     public static MulticastSocket getMultSocket() {
         return multSocket;
     }
 
+    /**
+     * Group IP address getter.
+     *
+     * @return the IP address of the multicast group
+     */
     public static InetAddress getGroupAddr() {
         return groupAddr;
     }
 
+    /**
+     * Group Port getter.
+     *
+     * @return the port of the multicast group
+     */
     public static int getGroupPort() {
         return groupPort;
     }
 
+    /**
+     * Main method. Initializes a multicast group, runs a reception thread, then listens to the standard entry,
+     * and sends its content to the multicast group.
+     *
+     * @param args Application arguments, must be the multicast group port.
+     * @throws IOException if an I/O exception is raised while reading the standard entry
+     */
     public static void main(String[] args) throws IOException {
         BufferedReader stdIn = null;
         if (args.length != 1) {
@@ -64,6 +92,12 @@ public class EchoServerMulticast {
         multSocket.close();
     }
 
+    /**
+     * Sends a message to the multicast group.
+     *
+     * @param message the message to send
+     * @throws IOException if an I/O exception is raised by sending the message
+     */
     public static void sendMessage(String message) throws IOException {
         DatagramPacket p = new DatagramPacket(message.getBytes(), message.length(), groupAddr, groupPort);
         multSocket.send(p);

@@ -1,15 +1,26 @@
 package stream;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.BufferedReader;
 
+/**
+ * Reception thread of a TCP Client.
+ *
+ * @author Loïc DUBOIS-TERMOZ
+ * @author Alexandre DUFOUR
+ */
 public class EchoClientReceptionThread extends Thread {
-    private BufferedReader socIn;
+    private final BufferedReader socIn;
 
+    /**
+     * Reception thread constructor.
+     *
+     * @param s the input stream to listen.
+     */
     EchoClientReceptionThread(BufferedReader s) {this.socIn = s;}
 
     /**
-     * receives a message from server then print it on the client standard output
+     * Run method of the thread. Listens the input stream. When a message is received from the server,
+     * it is then sent to the standard output
      **/
     public void run() {
         try {

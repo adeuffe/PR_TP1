@@ -1,31 +1,33 @@
-/***
- * EchoServer
- * Example of a TCP server
- * Date: 10/01/04
- * Authors:
- */
-
 package stream;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
+/**
+ * TCP Server with only one thread
+ *
+ * @author Loïc DUBOIS-TERMOZ
+ * @author Alexandre DUFOUR
+ */
 public class EchoServer {
 
     /**
-     * receives a request from client then sends an echo to the client
+     * Listens to the client socket, receives requests from the client then sends an echo to the client.
      *
      * @param clientSocket the client socket
      **/
     static void doService(Socket clientSocket) {
         try {
-            BufferedReader socIn = null;
+            BufferedReader socIn;
             socIn = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
             while (true) {
                 String line = socIn.readLine();
-                System.out.println(line);
+                socOut.println(line);
             }
         } catch (Exception e) {
             System.err.println("Error in EchoServer:" + e);
@@ -33,11 +35,11 @@ public class EchoServer {
     }
 
     /**
-     * main method
+     * Main method for the server, waits for the client connection, then calls the service method.
      *
-     * @param EchoServer port
-     **/
-    public static void main(String args[]) {
+     * @param args Application arguments, must be the server port.
+     */
+    public static void main(String[] args) {
         ServerSocket listenSocket;
 
         if (args.length != 1) {
@@ -56,5 +58,3 @@ public class EchoServer {
         }
     }
 }
-
-  
