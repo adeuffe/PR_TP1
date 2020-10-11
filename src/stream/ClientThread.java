@@ -1,31 +1,38 @@
-/***
- * ClientThread
- * Example of a TCP server
- * Date: 14/12/08
- * Authors:
- */
-
 package stream;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.Socket;
 
+/**
+ * Client thread for a TCP multi-threaded Server.
+ *
+ * @author Loïc DUBOIS-TERMOZ
+ * @author Alexandre DUFOUR
+ */
 public class ClientThread extends Thread {
 
-    private String name;
-    private Socket clientSocket;
+    private final String name;
+    private final  Socket clientSocket;
 
+    /**
+     * Client thread constructor.
+     *
+     * @param s client socket.
+     * @param name name used by the client.
+     */
     ClientThread(Socket s, String name) {
         this.clientSocket = s;
         this.name = name;
     }
 
     /**
-     * receives a request from client then sends an echo to the client
+     * Run method of the thread, receives a message request from client then send it to the communication thread,
+     * or disconnects from the server if the message is the disconnection message.
      **/
     public void run() {
         try {
-            BufferedReader socIn = null;
+            BufferedReader socIn;
             socIn = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             while (true) {
@@ -43,6 +50,10 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * Encodes then sends the message received by the thread from the client to the communication thread.
+     * @param message the message to encode and send.
+     */
     public void sendEncodedMessage(String message) {
         CommunicationThread.offerQueue(this.name + "|" + message);
     }
