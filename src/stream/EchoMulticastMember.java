@@ -80,10 +80,10 @@ public class EchoMulticastMember {
         String line;
         while (true) {
             line = stdIn.readLine();
-            sendMessage(line);
             if (line.equals(".")){
                 break;
             }
+            sendMessage(line);
         }
 
         System.out.println("Closing");

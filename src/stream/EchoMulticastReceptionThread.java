@@ -22,7 +22,7 @@ public class EchoMulticastReceptionThread extends Thread {
                 System.out.println(new String(p.getData()));
             }
         } catch (Exception e) {
-            System.err.println("Error in EchoMulticastReceptionThread: " + e);
+            System.out.println("Error in EchoMulticastReceptionThread: " + e);
         }
     }
 }
