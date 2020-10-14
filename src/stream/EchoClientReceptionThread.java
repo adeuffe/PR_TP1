@@ -31,7 +31,7 @@ public class EchoClientReceptionThread extends Thread {
                 message = socIn.readLine();
             }
         } catch (Exception e) {
-            System.err.println("Error in EchoClientReceptionThread:" + e);
+            System.out.println("Error in EchoClientReceptionThread:" + e);
         }
     }
 }

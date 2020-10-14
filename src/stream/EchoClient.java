@@ -64,7 +64,6 @@ public class EchoClient {
         receptionThread.interrupt();
         echoSocket.shutdownInput();
         echoSocket.shutdownOutput();
-        socIn.close();
         socOut.close();
         stdIn.close();
         echoSocket.close();
