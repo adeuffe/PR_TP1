@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author Loïc DUBOIS-TERMOZ
  * @author Alexandre DUFOUR
  */
-public class CommunicationThread extends Thread {
+public class EchoServerCommunicationThread extends Thread {
 
     private static final ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
 
