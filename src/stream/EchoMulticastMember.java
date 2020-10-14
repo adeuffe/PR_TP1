@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
  * @author Loïc DUBOIS-TERMOZ
  * @author Alexandre DUFOUR
  */
-public class EchoServerMulticast {
+public class EchoMulticastMember {
 
     private static MulticastSocket multSocket;
     private static InetAddress groupAddr;

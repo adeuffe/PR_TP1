@@ -18,7 +18,7 @@ public class EchoMulticastReceptionThread extends Thread {
             while (!this.isInterrupted()) {
                 byte[] buf = new byte[1000];
                 DatagramPacket p = new DatagramPacket(buf, buf.length);
-                EchoServerMulticast.getMultSocket().receive(p);
+                EchoMulticastMember.getMultSocket().receive(p);
                 System.out.println(new String(p.getData()));
             }
         } catch (Exception e) {

@@ -49,7 +49,7 @@ public class EchoServerMultiThreaded {
      **/
     public static void main(String[] args) {
         ServerSocket listenSocket;
-        CommunicationThread communicationThread = new CommunicationThread();
+        EchoServerCommunicationThread echoServerCommunicationThread = new EchoServerCommunicationThread();
 
         if (args.length != 1) {
             System.out.println("Usage: java EchoServer <EchoServer port>");
@@ -57,7 +57,7 @@ public class EchoServerMultiThreaded {
         }
         try {
             listenSocket = new ServerSocket(Integer.parseInt(args[0]));
-            communicationThread.start();
+            echoServerCommunicationThread.start();
             System.out.println("Server ready...");
             int i = 1;
             String name;
@@ -65,7 +65,7 @@ public class EchoServerMultiThreaded {
                 Socket clientSocket = listenSocket.accept();
                 System.out.println("Connexion from: " + clientSocket.getInetAddress());
                 name = "Client" + i;
-                ClientThread ct = new ClientThread(clientSocket, name);
+                EchoServerClientThread ct = new EchoServerClientThread(clientSocket, name);
                 addClientSocket(clientSocket);
                 ct.start();
                 sendConnectionMessage(name);
@@ -84,7 +84,7 @@ public class EchoServerMultiThreaded {
      */
     public static void sendConnectionMessage(String name) {
         String connectionMessage = name + " a rejoint le chat !";
-        CommunicationThread.offerQueue("System|" + connectionMessage);
+        EchoServerCommunicationThread.offerQueue("System|" + connectionMessage);
     }
 
     /**
@@ -94,6 +94,6 @@ public class EchoServerMultiThreaded {
      */
     public static void sendDisconnectionMessage(String name) {
         String disconnectionMessage = name + " a quitté le chat !";
-        CommunicationThread.offerQueue("System|" + disconnectionMessage);
+        EchoServerCommunicationThread.offerQueue("System|" + disconnectionMessage);
     }
 }

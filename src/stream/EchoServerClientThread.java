@@ -10,7 +10,7 @@ import java.net.Socket;
  * @author Loïc DUBOIS-TERMOZ
  * @author Alexandre DUFOUR
  */
-public class ClientThread extends Thread {
+public class EchoServerClientThread extends Thread {
 
     private final String name;
     private final  Socket clientSocket;
@@ -21,7 +21,7 @@ public class ClientThread extends Thread {
      * @param s client socket.
      * @param name name used by the client.
      */
-    ClientThread(Socket s, String name) {
+    EchoServerClientThread(Socket s, String name) {
         this.clientSocket = s;
         this.name = name;
     }
@@ -55,7 +55,7 @@ public class ClientThread extends Thread {
      * @param message the message to encode and send.
      */
     public void sendEncodedMessage(String message) {
-        CommunicationThread.offerQueue(this.name + "|" + message);
+        EchoServerCommunicationThread.offerQueue(this.name + "|" + message);
     }
 }
 
