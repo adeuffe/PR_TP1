@@ -166,7 +166,7 @@ public class EchoServerMultiThreaded {
             ftemp.close();
         }
         catch(FileNotFoundException e) {
-            System.out.println("Fichier introuvable");
+            System.out.println("Fichier historique introuvable");
         }
         catch(IOException ioe) {
             System.out.println("Exception " + ioe);
