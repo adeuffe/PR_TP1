@@ -60,7 +60,6 @@ public class EchoClient {
             }
         }
 
-        System.out.println("Closing");
         receptionThread.interrupt();
         echoSocket.shutdownInput();
         echoSocket.shutdownOutput();
